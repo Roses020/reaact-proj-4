@@ -5,8 +5,8 @@ const cors = require('cors')
 const {SERVER_PORT} = process.env
 const {getAllPosts, getCurrentUserPosts, addPost, editPost, deletePost} = require('./controllers/posts')
 
-const {user} = require('./models/user')
-const {post} = require('./models/post')
+const {User} = require('./models/user')
+const {Post} = require('./models/post')
 const { sequelize } = require('./util/database')
 
 const {login, register} = require('./controllers/auth')
@@ -27,8 +27,8 @@ app.post('/post',isAuthenticated, addPost)
 app.put('/posts/:id',isAuthenticated, editPost)
 app.delete('/posts/:id',isAuthenticated, deletePost )
 
-user.hasMany(post)
-post.belongsTo(user)
+User.hasMany(Post)
+Post.belongsTo(User)
 
 sequelize.sync()
 .then(() => {

@@ -1,5 +1,5 @@
 require("dotenv").config();
-const { user } = require("../models/user");
+const { User } = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { SECRET } = process.env;
@@ -14,13 +14,13 @@ module.exports = {
       const { username, password } = req.body;
       console.log(req.body)
       // console.log('registering')
-      let foundUser = await user.findOne({ where: { username } });
+      let foundUser = await User.findOne({ where: { username } });
       if (foundUser) {
         res.status(400).send("that username is already taken");
       } else {
         const salt = bcrypt.genSaltSync(10);
         const hash = bcrypt.hashSync(password, salt);
-        const newUser = await user.create({
+        const newUser = await User.create({
           username: username,
           hashedPass: hash,
         });
@@ -47,7 +47,7 @@ module.exports = {
   login: async (req, res) => {
     try {
       const { username, password } = req.body;
-      const foundUser = await user.findOne({ where: { username } });
+      const foundUser = await User.findOne({ where: { username } });
       if (foundUser) {
         console.log(foundUser)
         const isAuthenticated = bcrypt.compareSync(

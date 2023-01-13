@@ -1,5 +1,5 @@
-const User = require('../models/user');
-const Post = require('../models/post');
+const {User} = require('../models/user');
+const {Post} = require('../models/post');
 
 
 module.exports = {
@@ -44,28 +44,44 @@ module.exports = {
     try {
       const {title, content, status, userId} = req.body
       await Post.create({title, content, privateStatus: status, userId}) 
-      console.log("add Post");
+      // console.log("add Post");
 
       res.sendStatus(200)
       
     } catch (error) {
-      console.log('error in getCurrentUserPosts')
+      console.log('ERROR in addPost')
       console.log(error)
       res.sendStatus(400)
     }
   },
-
   editPost: async (req, res) => {
     try {
-      const { Id, status } = req.body
-    
-      console.log("edit Post");
+      const {id} = req.params
+      const {status} = req.body
+      await Post.update({privateStatus: status}, {
+          where: {id: +id}
+      })
+      res.sendStatus(200)
+      
   } catch (error)  {
-
+    console.log('ERROR IN editPost')
+    console.log(error)
+    res.sendStatus(400)
   }
   },
+  deletePost: async (req, res) => {
+    try {
+      const {id} = req.params
+      await Post.destroy({where: {id: +id}}), 
+      
+      res.sendStatus(200)
+      
+    } catch (error)  {
+      console.log('ERROR IN deletePost')
+      console.log(error)
+      res.sendStatus(400)
+    }
 
-  deletePost: (req, res) => {
-    console.log("delete Post,");
-  },
-};
+  }
+  
+}
